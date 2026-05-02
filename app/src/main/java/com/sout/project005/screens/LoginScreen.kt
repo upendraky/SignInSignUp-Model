@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -25,10 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -106,29 +108,26 @@ Box(
         }
         val annotated = buildAnnotatedString {
             append("Don't have an account? ")
-            pushStringAnnotation(tag = "signup", annotation = "signup")
-            withStyle(
-                style = SpanStyle
-                    (
-                    color = Color(0xffff6a2e),
-                    fontWeight = FontWeight.Bold
+            withLink(
+                LinkAnnotation.Clickable(
+                    tag = "signup",
+                    styles = TextLinkStyles(
+                        style = SpanStyle(
+                            color = Color(0xffff6a2e),
+                            fontWeight = FontWeight.Bold
+                        )
+                    ),
+                    linkInteractionListener = {
+                        onSignUpClick()
+                    }
                 )
-            )
-            {
+            ) {
                 append("Sign Up")
             }
-            pop()
         }
 
-        ClickableText(
+        Text(
             text = annotated,
-            onClick = { offset ->
-                annotated.getStringAnnotations(
-                    tag = "signup", start = offset, end = offset
-                ).firstOrNull()?.let {
-                    onSignUpClick()
-                }
-            },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp)
